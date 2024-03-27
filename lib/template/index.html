@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>news search</title>
+</head>
+<body>
+<script>
+    function getQuery() {
+        let query = document.getElementById("search_query").value;
+        console.log(encodeURI(query));
+        return encodeURI(query)
+    }
+    function redirectToResult(queryURI) {
+        window.location.replace("/search?q=" + getQuery())
+    }
+</script>
+<input type="text" id="search_query"/>
+<button id="search" type="submit" onclick="redirectToResult(getQuery())">Search</button>
+</body>
+</html>

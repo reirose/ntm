@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>response</title>
+</head>
+<body>
+<a href="../"><-back-></a><br>
+{% if data.status != "error" %}
+found and written to database : {{ data.totalResults }} items<br>
+{% for item in data.articles %}
+{{ item.url }}<br>
+{% endfor %}
+{% else %}
+nothing found
+{% endif %}
+</body>
+</html>
