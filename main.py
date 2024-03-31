@@ -1,13 +1,21 @@
 import uvicorn
-
 from typing import Union
-from fastapi import FastAPI, Request
+from fastapi import Request
 from fastapi.responses import FileResponse, HTMLResponse
+
 from bin.db import coll
-from bin.init import templates, newsapi_key
+from bin.init import app, logger, templates, newsapi_key
 from bin.functions import parse_news
 
-app = FastAPI()
+
+@app.on_event("startup")
+async def startup():
+    logger.info("App running")
+
+
+@app.on_event("shutdown")
+async def shutdown():
+    logger.info("App stopped")
 
 
 @app.get('/')
@@ -22,7 +30,7 @@ async def trigger_error() -> float:
 
 
 @app.get("/search", response_class=HTMLResponse)
-async def get_search_query(request: Request, q: Union[str, None] = None) -> templates.TemplateResponse:
+async def get_search_query(request: Request, q: Union[str, None] = None):
     data = parse_news(f"https://newsapi.org/v2/everything?apiKey={newsapi_key}"
                       f"&sortBy=publishedAt&q={q}")
 
@@ -34,9 +42,9 @@ async def get_search_query(request: Request, q: Union[str, None] = None) -> temp
         data["totalResults"] = n
 
     return templates.TemplateResponse(
-        request=request,
         name="search_response.html",
-        context={"data": data}
+        context={"data": data,
+                 "request": request}
     )
 
 
