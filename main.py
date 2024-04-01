@@ -7,6 +7,8 @@ from bin.db import coll
 from bin.init import app, logger, templates, newsapi_key
 from bin.functions import parse_news
 
+from controllers import index
+
 
 @app.on_event("startup")
 async def startup():
@@ -47,6 +49,8 @@ async def get_search_query(request: Request, q: Union[str, None] = None):
                  "request": request}
     )
 
+
+app.include_router(index.router)
 
 if __name__ == "__main__":
     uvicorn.run(app,

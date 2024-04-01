@@ -1,4 +1,6 @@
 import logging
+import os
+
 import sentry_sdk
 
 from json import load
@@ -22,6 +24,13 @@ except FileNotFoundError:
     logging.error("config file not found")
     input("press [enter] to exit")
     exit(0)
+
+try:
+    _ = open("./logs/app.log", "rt")
+except FileNotFoundError:
+    os.mkdir("./logs")
+    _ = open("./logs/app.log", "xt")
+    _.close()
 
 sentry_sdk.init(dsn="https://e36c13527c6d93485c31205a1309e6da@o4506976349519872.ingest.us.sentry.io/4506976351223808",
                 traces_sample_rate=1.0,
