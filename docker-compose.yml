@@ -35,7 +35,7 @@ services:
   beats:
     image: elastic/filebeat:7.16.2
     volumes:
-      - ./configs/filebeat/config.yml:/usr/share/filebeat/filebeat.yml:ro
+      - ./configs/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
       - ./host_metrics_app/:/host_metrics_app/:ro
     networks:
       - elk
