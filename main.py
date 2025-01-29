@@ -1,3 +1,6 @@
+import json
+import os
+
 import uvicorn
 
 from typing import Union
@@ -15,10 +18,10 @@ async def root() -> FileResponse:
     return FileResponse("lib/template/index.html")
 
 
-@app.get("/sentry-debug")
-async def trigger_error() -> float:
-    division_by_zero = 1 / 0
-    return division_by_zero
+# @app.get("/sentry-debug")
+# async def trigger_error() -> float:
+#     division_by_zero = 1 / 0
+#     return division_by_zero
 
 
 @app.get("/search", response_class=HTMLResponse)
@@ -32,6 +35,17 @@ async def get_search_query(request: Request, q: Union[str, None] = None) -> temp
             coll.insert_one(item)
             n += 1
         data["totalResults"] = n
+
+        log = {
+            "type": "INFO",
+            "process": "search",
+            "response": {
+                data
+            }
+        }
+        BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+        with open(os.path.join(BASE_DIR, 'host_metrics_app.log'), 'a') as f:
+            f.write(json.dumps(log) + '\n')
 
     return templates.TemplateResponse(
         request=request,

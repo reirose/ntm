@@ -1,6 +1,20 @@
-FROM python:3-alpine
+# Используем официальный образ Python
+FROM python:3.11-slim
+
+# Устанавливаем рабочую директорию
+WORKDIR /app
+
+# Копируем зависимости
+COPY requirements.txt .
+
+# Устанавливаем зависимости
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Копируем исходный код
 COPY . .
-EXPOSE 5000
-EXPOSE 27017
-RUN pip install -r requirements.txt
-CMD ["python", "./main.py"]
+
+# Устанавливаем переменные окружения
+ENV PYTHONUNBUFFERED=1
+
+# Команда для запуска FastAPI
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
